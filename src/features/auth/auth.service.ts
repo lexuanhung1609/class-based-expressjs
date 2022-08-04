@@ -1,11 +1,9 @@
-import { UserService, User } from '../user';
+import { UserService } from '../user';
 import { SignUp } from './dto/sign-up.dto';
 import { SignIn } from './dto/sign-in.dto';
 import { BadArguments, DataExist, hashPassword, NotFound, Ok, Response } from '../../shared';
 import * as jwt from 'jsonwebtoken';
 import * as bcrypt from 'bcrypt';
-
-const { JWT_SECRET_KEY } = process.env;
 
 export class AuthService {
   constructor(private userService: UserService) {}
@@ -17,24 +15,18 @@ export class AuthService {
       return NotFound('Email not found');
     }
 
-    bcrypt
-      .compare(signInData.password, user.password)
-      .then((result) => {
-        if (!result) {
-          return BadArguments('Wrong password');
-        }
+    const compareResult = await bcrypt.compare(signInData.password, user.password);
+    if (!compareResult) {
+      return BadArguments('Wrong password');
+    }
 
-        const payload = { email: user.email, sub: user.id };
+    const payload = { email: user.email, sub: user.id };
 
-        return Ok({
-          resource: {
-            accessToken: jwt.sign(payload, JWT_SECRET_KEY),
-          },
-        });
-      })
-      .catch((err) => {
-        throw new Error(err);
-      });
+    return Ok({
+      resource: {
+        accessToken: jwt.sign(payload, process.env.JWT_SECRET_KEY, { expiresIn: '7d' }),
+      },
+    });
   }
 
   async signup(signupData: SignUp): Promise<Response> {

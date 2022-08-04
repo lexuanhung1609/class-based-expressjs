@@ -1,5 +1,4 @@
 import { IsDefined, IsNotEmpty, IsEmail, MinLength, Validate, IsPhoneNumber, Matches } from 'class-validator';
-import { IsUserExist } from '../../user';
 
 export class SignUp {
   @IsDefined()
@@ -12,11 +11,10 @@ export class SignUp {
 
   @IsDefined()
   @IsEmail()
-  @Validate(IsUserExist)
   readonly email: string;
 
   @IsDefined()
-  @IsPhoneNumber()
+  @IsPhoneNumber('VN')
   readonly phone: string;
 
   @IsDefined()

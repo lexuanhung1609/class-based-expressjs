@@ -1,4 +1,4 @@
-import { DataSource, Repository } from 'typeorm';
+import { DataSource } from 'typeorm';
 import { AuthController, AuthService, AuthRoutes } from './features/auth';
 import { User, UserService, UserController } from './features/user';
 import { Router } from 'express';
@@ -11,7 +11,7 @@ export const bootstrap = (dataSource: DataSource, router: Router) => {
   //Auth
   const authService = new AuthService(userService);
   const authController = new AuthController(authService);
-  const authRoutes = new AuthRoutes(router, userService, authController);
+  const authRoutes = new AuthRoutes(router, authController).getAuthRoutes();
 
   return {
     userController,

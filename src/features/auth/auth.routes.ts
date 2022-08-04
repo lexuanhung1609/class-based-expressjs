@@ -1,14 +1,12 @@
-import * as express from 'express';
-import { UserService } from '../user';
 import { AuthController } from './auth.controller';
-import { Application, Router } from 'express';
+import { Request, Response, Router } from 'express';
 
 export class AuthRoutes {
-  constructor(private router: Router, private userService: UserService, private authController: AuthController) {}
+  constructor(private router: Router, public authController: AuthController) {}
 
   getAuthRoutes(): Router {
-    this.router.post('/login', this.authController.login);
-    this.router.post('/register', this.authController.signup);
+    this.router.post('/login', (req: Request, res: Response) => this.authController.login(req, res));
+    this.router.post('/register', (req: Request, res: Response) => this.authController.signup(req.body, res));
 
     return this.router;
   }

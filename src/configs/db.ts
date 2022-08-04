@@ -9,7 +9,8 @@ const AppDataSource = new DataSource({
   username: DB_USERNAME,
   password: DB_PASS,
   database: DB_NAME,
-  entities: ['../features/**/entity/*.ts'],
+  entities: [__dirname + '/../features/**/entities/*.entity.ts'],
+  synchronize: true,
 });
 
 export default AppDataSource;
