@@ -1,33 +1,30 @@
 import { AuthService } from './auth.service';
-import { Request, Response } from 'express';
+import { Response } from 'express';
 import { SignIn } from './dto/sign-in.dto';
 import { SignUp } from './dto/sign-up.dto';
-import { validate } from 'class-validator';
-import { BadArguments } from '../../shared';
-import { plainToClass } from 'class-transformer';
+import { BadArguments, validateInput } from '../../shared';
 
 export class AuthController {
   constructor(private authService: AuthService) {}
 
-  async login(req: Request, res: Response): Promise<void> {
-    const input = req.body as SignIn;
-    const errors = await validate(input);
+  async login(body: SignIn, res: Response): Promise<void> {
+    const errors = await validateInput(SignIn, body);
     if (errors.length > 0) {
-      res.json(BadArguments());
+      res.json(BadArguments(`${errors.toString()}`));
     }
 
-    const result = await this.authService.login(input);
+    const result = await this.authService.login(body);
 
     res.json(result);
   }
 
   async signup(body: SignUp, res: Response): Promise<void> {
-    const input = plainToClass(SignUp, body);
-    const errors = await validate(input);
+    const errors = await validateInput(SignUp, body);
+
     if (errors.length > 0) {
       res.json(BadArguments(`${errors.toString()}`));
     }
-    const result = await this.authService.signup(input);
+    const result = await this.authService.signup(body);
 
     res.json(result);
   }
