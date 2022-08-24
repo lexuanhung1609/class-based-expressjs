@@ -1,6 +1,6 @@
 import { DataSource } from 'typeorm';
 import { AuthController, AuthService, AuthRoutes } from './features/auth';
-import { User, UserService, UserController } from './features/user';
+import { User, UserService, UserController, UserRoutes } from './features/user';
 import { Router } from 'express';
 
 export const bootstrap = (dataSource: DataSource, router: Router) => {
@@ -8,6 +8,7 @@ export const bootstrap = (dataSource: DataSource, router: Router) => {
   const userRepository = dataSource.getRepository(User);
   const userService = new UserService(userRepository);
   const userController = new UserController(userService);
+  const userRoutes = new UserRoutes(router, userController).getUserRoutes();
   //Auth
   const authService = new AuthService(userService);
   const authController = new AuthController(authService);
@@ -17,6 +18,7 @@ export const bootstrap = (dataSource: DataSource, router: Router) => {
     userController,
     userService,
     userRepository,
+    userRoutes,
     authService,
     authController,
     authRoutes,

@@ -22,7 +22,8 @@ AppDataSource.initialize()
       console.log(`Connect to server on port : ${PORT}`);
       const initialize = bootstrap(dataSource, express.Router());
 
-      app.use('/auth', initialize.authRoutes);
+      app.use(initialize.authRoutes);
+      app.use(initialize.userRoutes);
       app.get('/', (req: Request, res: Response) => {
         res.json({ version: process.env.npm_package_version });
       });

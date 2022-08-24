@@ -9,6 +9,10 @@ export class UserService {
     return this.userRepository.findOne({ where: { email } });
   }
 
+  async findAll(): Promise<User[] | undefined> {
+    return this.userRepository.find();
+  }
+
   async createUser(data: SignUp): Promise<User> {
     const user = this.userRepository.create(data);
 
